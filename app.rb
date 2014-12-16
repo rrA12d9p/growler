@@ -12,14 +12,28 @@ ActiveRecord::Base.establish_connection(
 
 class User < ActiveRecord::Base
 	has_many :posts 
+	validates :username, presence: true, uniqueness: true
 end
 
 class Post < ActiveRecord::Base
 	belongs_to :user
+	validates :body, presence: true
 end
+
+# post '/createuser/:username'
+# 	@username = params[:username]
+# 	@user = User.create(username: @username)
+# end
 
 get '/:name' do
 	@name = params[:name]
-	@user = User.find_by(name: @name)
-	# return erb :page
+	@user = User.find_by(username: @name)
+	@posts = @user.posts
+	return erb :userposts
+end
+
+post '/:newpost' do
+	@user_id = params[:user_id]
+	@body = params[:body]
+	posts.create(body: post, user_id: user_id)
 end
